@@ -1,0 +1,13 @@
+{
+  "dependencies": {
+    "env": "^0.0.2",
+    "express": "^4.18.2"
+  },
+  "name": "investmint-assignment",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
