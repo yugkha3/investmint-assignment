@@ -3,3 +3,4 @@ node_modules
 
 .env
 *.lock
+*.DS_Store
