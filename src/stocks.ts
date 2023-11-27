@@ -8,6 +8,7 @@ interface StockData {
   };
 }
 
+//Dummy stocks
 const stocks: StockData = {
   "BANKBARODA.NS": { quantity: 5, previousClose: 0.0, regularMarketPrice: 0.0 },
   "JINDALSTEL.NS": { quantity: 9, previousClose: 0.0, regularMarketPrice: 0.0 },
@@ -21,6 +22,7 @@ const stocks: StockData = {
   "ITC.NS": { quantity: 10, previousClose: 0.0, regularMarketPrice: 0.0 },
 };
 
+// Functions to fetch and update the stock price (both previous close and current) of our dummy stocks
 const fetchStockData = async (
   symbol: string
 ): Promise<{ previousClose: number; regularMarketPrice: number }> => {
@@ -53,6 +55,7 @@ const updatePrices = async (stocks: StockData): Promise<void> => {
   );
 };
 
+// The below function calculates the total portfolio values
 enum PriceType {
   RegularMarketPrice = "regularMarketPrice",
   PreviousClose = "previousClose",
@@ -73,6 +76,7 @@ const calculateTotalPortfolio = (priceType: PriceType): number => {
   return totalPortfolio;
 };
 
+// Generates the message to be sent daily @4PM of the user portfolio
 export const generatePortfolioMessage = async (): Promise<string> => {
   let message = `📊Today's Portfolio Digest📊\nHere's a snapshot of your holdings and movements for today:\n\n`;
 

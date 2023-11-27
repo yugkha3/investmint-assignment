@@ -32,6 +32,7 @@ async function sendMessage(chat_id: number, text: string): Promise<void> {
     }
 }
 
+//Replies with relevant message to all the avialble user commands 
 async function replyToCommand(user_id: number, message: string, chat_id: number): Promise<void> {
     let text = '';
 
@@ -44,28 +45,29 @@ async function replyToCommand(user_id: number, message: string, chat_id: number)
             break;
         case '/subscribe':
             if (isSubscribed) {
-                text = 'You are already subscribed. No need to subscribe again.';
+                text = 'You are already subscribed. No need to subscribe again. 👍';
             } else {
                 await addUserToDB(user_id);
-                text = 'You have been subscribed! You will now receive daily updates.';
+                text = 'You have been subscribed! You will now receive daily updates. 👍';
             }
             break;
         case '/unsubscribe':
             if (isSubscribed) {
                 await removeUserFromDB(user_id);
-                text = 'You have been unsubscribed! You will no longer receive updates.';
+                text = 'You have been unsubscribed! You will no longer receive updates. 👍';
             } else {
-                text = "You're not subscribed. No need to unsubscribe.";
+                text = "You're not subscribed. No need to unsubscribe. 👍";
             }
             break;
         default:
-            text = 'null';
+            text = '❎ This is not a valid command!';
             break;
     }
 
     await sendMessage(chat_id, text);
 }
 
+// Generates and sends the portfolio message to all the subcribed users.
 const sendPortfolioUpdatesToAllUsers = async (): Promise<void> => {
     try {
         const users = await UserModel.find({});
@@ -82,13 +84,13 @@ const sendPortfolioUpdatesToAllUsers = async (): Promise<void> => {
     }
 };
 
-
 cron.schedule('0 16 * * *', async () => {
     console.log('Running portfolio update task...');
     await sendPortfolioUpdatesToAllUsers();
 }, {
     timezone: 'Asia/Kolkata'
 });
+
 
 app.all('*', async (req: Request, res: Response) => {
     const { method } = req;
