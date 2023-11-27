@@ -2,7 +2,10 @@ import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import axios from 'axios';
 require('dotenv').config();
+import * as cron from 'node-cron';
+
 import { UserModel, addUserToDB, removeUserFromDB } from './database';
+import { generatePortfolioMessage } from './stocks';
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -62,6 +65,30 @@ async function replyToCommand(user_id: number, message: string, chat_id: number)
 
     await sendMessage(chat_id, text);
 }
+
+const sendPortfolioUpdatesToAllUsers = async (): Promise<void> => {
+    try {
+        const users = await UserModel.find({});
+        const portfolioMessage = await generatePortfolioMessage();
+
+        for (const user of users) {
+            const user_id = user.user_id;
+            await sendMessage(user_id, portfolioMessage);
+        }
+
+        console.log('Portfolio updates sent to all users.');
+    } catch (error) {
+        console.error('Error sending portfolio updates:', error);
+    }
+};
+
+
+cron.schedule('0 16 * * *', async () => {
+    console.log('Running portfolio update task...');
+    await sendPortfolioUpdatesToAllUsers();
+}, {
+    timezone: 'Asia/Kolkata'
+});
 
 app.all('*', async (req: Request, res: Response) => {
     const { method } = req;
