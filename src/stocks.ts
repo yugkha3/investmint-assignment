@@ -73,7 +73,7 @@ const calculateTotalPortfolio = (priceType: PriceType): number => {
   return totalPortfolio;
 };
 
-const generatePortfolioMessage = async (stocks: StockData): Promise<string> => {
+export const generatePortfolioMessage = async (): Promise<string> => {
   let message = `📊Today's Portfolio Digest📊\nHere's a snapshot of your holdings and movements for today:\n\n`;
 
   const formatChange = (change: number): string => {
@@ -88,9 +88,8 @@ const generatePortfolioMessage = async (stocks: StockData): Promise<string> => {
   };
 
   await updatePrices(stocks);
-  const currentPortfolio = calculateTotalPortfolio(
-    PriceType.RegularMarketPrice
-  );
+
+  const currentPortfolio = calculateTotalPortfolio(PriceType.RegularMarketPrice);
   const yesterdayPortfolio = calculateTotalPortfolio(PriceType.PreviousClose);
   const totalChange = currentPortfolio - yesterdayPortfolio;
 
@@ -101,27 +100,14 @@ const generatePortfolioMessage = async (stocks: StockData): Promise<string> => {
     const stockChange = priceChange * quantity;
 
     message += `${symbol} (${quantity}) | ${regularMarketPrice.toFixed(2)}\n`;
-    message += `💹 Price: ${previousClose.toFixed(
-      2
-    )} → ${regularMarketPrice.toFixed(2)}\n`;
-    message += `${getEmoji(priceChange)} Stock Portfolio Change: ${formatChange(
-      stockChange
-    )} | ${formatChange(percentageChange)}%\n\n`;
+    message += `💹 Price: ${previousClose.toFixed(2)} → ${regularMarketPrice.toFixed(2)}\n`;
+    message += `${getEmoji(priceChange)} Stock Portfolio Change: ${formatChange(stockChange)} | ${formatChange(percentageChange)}%\n\n`;
   });
 
   const totalChangeEmoji = getEmoji(totalChange);
-  message += `Overall, your portfolio value is ${formatChange(
-    currentPortfolio
-  )}. It changed by ${totalChangeEmoji} ${formatChange(
-    totalChange
-  )} | ${formatChange((totalChange / yesterdayPortfolio) * 100)}% today.\n`;
+  message += `Overall, your portfolio value is ${formatChange(currentPortfolio)}. It changed by ${totalChangeEmoji} ${formatChange(totalChange)} | ${formatChange((totalChange / yesterdayPortfolio) * 100)}% today.\n`;
   message += `It's been an eventful day in the market. Let's keep an eye on the trends and make strategic moves!\n\n`;
   message += `💪📈 #Investmint #MarketDigest`;
 
   return message;
 };
-
-(async () => {
-  const portfolioMessage = await generatePortfolioMessage(stocks);
-  console.log(portfolioMessage);
-})();
